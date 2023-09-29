@@ -1,5 +1,7 @@
 package com.codeinbp.telegrambot;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
@@ -11,8 +13,13 @@ import org.telegram.telegrambots.meta.TelegramBotsApi;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
 
+import java.util.Date;
+import java.util.Timer;
+import java.util.TimerTask;
+
 @SpringBootApplication
 public class TelegrambotApplication {
+	private static final Logger logger = LoggerFactory.getLogger(NovaBot.class);
 
 
 	public static void main(String[] args) throws TelegramApiException {
@@ -31,22 +38,25 @@ public class TelegrambotApplication {
 
 		botsApi.registerBot(myBot);
 
+		String reminder = "Enhance Logs";
 
-		//myBot.sendText(6017516597L, "Hello Nova Alien Bot!");
-		//myBot.sendText(325406611L, "Hello Nova Alien Bot!");
-		//myBot.sendText(6017516597L, "server stopped, Nova no longer work :(");
-		//myBot.sendText(325406611L, "server stopped, Nova no longer work :(");
 
-		for(int i=0; i<=3; i++){
-			myBot.sendText(c1, "Count = " + i );
+		try{
+			int count = 0;
+			while(true){
+				System.out.println(new Date());
+				sendTextMessageToUser(myBot, c1, "Reminder " + count + ": " + reminder);
+				Thread.sleep(20 * 1000);
+				count++;
+			}
+
+		} catch (InterruptedException e){
+			e.printStackTrace();
 		}
-
-
-
-
-
-
-
 	}
 
+	public static void sendTextMessageToUser(NovaBot bot, Long userId, String textMessage) {
+		bot.sendText(userId, textMessage);
+		logger.info("Bot Sending: " + textMessage);
+	}
 }

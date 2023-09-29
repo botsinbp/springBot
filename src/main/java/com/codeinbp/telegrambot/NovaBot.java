@@ -34,7 +34,7 @@ public class NovaBot extends TelegramLongPollingBot{
         return clientOne;
     }
 
-    @Value("${registered.device.id.mo}")
+    @Value("${registered.device.id.hano}")
     private String clientOne;;
 
     private boolean screaming = false;
