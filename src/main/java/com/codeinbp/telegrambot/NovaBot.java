@@ -3,45 +3,48 @@ package com.codeinbp.telegrambot;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
+import org.springframework.context.annotation.PropertySource;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
+import org.telegram.telegrambots.meta.TelegramBotsApi;
 import org.telegram.telegrambots.meta.api.methods.CopyMessage;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
-import org.telegram.telegrambots.meta.api.objects.User;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
-
-import javax.annotation.PostConstruct;
+import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
 //TODO: give billnumber and the bot will send you the bill report in pdf or whatever
 
-//@Component
-public class ExampleBot extends TelegramLongPollingBot{
-    private static final Logger logger = LoggerFactory.getLogger(ExampleBot.class);
+@Component
+@PropertySource(value = "classpath:application.properties", ignoreResourceNotFound = true)
+public class NovaBot extends TelegramLongPollingBot{
+    private static final Logger logger = LoggerFactory.getLogger(NovaBot.class);
 
     @Value("${bot.token}")
-    private  String token;
+    private  String token ;//= configProperties.getConfigValue("bot.token");
 
-    @Value("${username}")
+    @Value("${bot.username}")
     private  String username;
+
+    public String getClientOne() {
+        return clientOne;
+    }
+
+    @Value("${registered.device.id.mo}")
+    private String clientOne;;
 
     private boolean screaming = false;
 
 
-    @Bean
-    public static PropertySourcesPlaceholderConfigurer propertyConfigInDev() {
-        return new PropertySourcesPlaceholderConfigurer();
-    }
-
-    public ExampleBot(){
-        System.out.println(token);
+    public NovaBot(){
 
     }
 
-    public ExampleBot( String token, String username) {
+    public NovaBot(String token, String username) {
         this.token = token;
         this.username = username;
     }
@@ -81,7 +84,8 @@ public class ExampleBot extends TelegramLongPollingBot{
         var msg = update.getMessage();
         var user = msg.getFrom();
 
-        System.out.println(user.getFirstName() + " wrote " + msg.getText());
+        //System.out.println(user.getFirstName() + " wrote " + msg.getText());
+        logger.info(user.getFirstName() + " wrote "+msg.getText());
 
 
         var id = user.getId();
