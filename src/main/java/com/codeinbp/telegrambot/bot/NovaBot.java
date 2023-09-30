@@ -1,28 +1,24 @@
-package com.codeinbp.telegrambot;
+package com.codeinbp.telegrambot.bot;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.PropertySource;
-import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
-import org.telegram.telegrambots.meta.TelegramBotsApi;
 import org.telegram.telegrambots.meta.api.methods.CopyMessage;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
-import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
 //TODO: give billnumber and the bot will send you the bill report in pdf or whatever
 
 @Component
 @PropertySource(value = "classpath:application.properties", ignoreResourceNotFound = true)
-public class NovaBot extends TelegramLongPollingBot{
+public class NovaBot extends TelegramLongPollingBot {
     private static final Logger logger = LoggerFactory.getLogger(NovaBot.class);
+
 
     @Value("${bot.token}")
     private  String token ;//= configProperties.getConfigValue("bot.token");
@@ -34,14 +30,19 @@ public class NovaBot extends TelegramLongPollingBot{
         return clientOne;
     }
 
-    @Value("${registered.device.id.hano}")
+    @Value("${registered.device.id.mo}")
     private String clientOne;;
 
     private boolean screaming = false;
 
+    public NovaBot novabot;
 
     public NovaBot(){
 
+    }
+
+    public NovaBot getNovabot() {
+        return novabot;
     }
 
     public NovaBot(String token, String username) {
@@ -123,11 +124,39 @@ public class NovaBot extends TelegramLongPollingBot{
 
             return;                                     //We don't want to echo commands, so we exit
         }
+
+        /*if(msg.isCommand()) {
+            if (msg.getText().equals("/nova")) {
+
+                //If the command was /scream, we switch gears
+                String nova = "The character was created in 1966 by writer Marv Wolfman in issue #3 of his fanzine Super Adventures. Then known as the Star, he was an alien doctor named Denteen who found a spaceship containing pills which gave him a different superhuman power every five minutes. ";
+
+                sendText(id, nova);
+            }
+        }*/
+
+        handleNovaCommand(id, msg);
     }
 
     //@PostConstruct
     public void start() {
         logger.info("username: {}, token: {}", username, token);
+    }
+
+    public void handleNovaCommand(Long id, Message msg){
+        if(msg.isCommand()){
+            if(msg.getText().equals("/nova")){
+
+                //If the command was /scream, we switch gears
+                String nova = "The character was created in 1966 by writer Marv Wolfman in issue #3 of his fanzine Super Adventures. Then known as the Star, he was an alien doctor named Denteen who found a spaceship containing pills which gave him a different superhuman power every five minutes. ";
+
+                sendText(id, nova);
+            }
+
+
+
+
+        }
     }
 
     public void sendText(Long who, String what){
